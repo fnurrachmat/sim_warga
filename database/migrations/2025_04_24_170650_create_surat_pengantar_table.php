@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('surat_pengantar', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('warga_id')->constrained('warga')->onDelete('cascade');
+            $table->string('jenis_surat');
+            $table->text('keperluan')->nullable();
             $table->timestamps();
         });
     }
