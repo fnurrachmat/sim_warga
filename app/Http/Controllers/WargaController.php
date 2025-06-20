@@ -5,7 +5,7 @@ use App\Models\Warga;
 use App\Models\MasterData;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use PDF;
+use Barryvdh\DomPDF\Facade\PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\WargaExport;
 
@@ -21,7 +21,7 @@ class WargaController extends Controller
             $query->where('nama', 'like', '%' . $request->search . '%');
         }
 
-        $warga = $query->orderBy('nama')->paginate(10);
+        $warga = $query->orderBy('nama')->get();
         return view('warga.index', compact('warga'));
     }
 
@@ -127,11 +127,15 @@ public function exportExcel()
 }
 
 // Tampilkan daftar keluarga unik
-public function keluargaIndex()
+public function keluargaIndex(Request $request)
 {
-    $keluarga = Warga::select('no_kk')
-        ->groupBy('no_kk')
-        ->get();
+    $query = Warga::select('no_kk')->groupBy('no_kk');
+
+    if ($request->filled('search')) {
+        $query->where('no_kk', 'like', '%' . $request->search . '%');
+    }
+
+    $keluarga = $query->get();
 
     return view('keluarga.index', compact('keluarga'));
 }

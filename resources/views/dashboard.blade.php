@@ -1,89 +1,180 @@
 @extends('layouts.app')
 
+@section('title', 'Dashboard - Sistem Informasi Warga')
+
 @section('content')
-<div class="container">
-    <h2>Dashboard</h2>
+<div class="container-fluid px-0">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    </div>
 
+    <!-- Statistik Utama -->
     <div class="row">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Total Warga</div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <h3 class="card-title">{{ $totalWarga }}</h3>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Warga</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalWarga }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Jumlah KK</div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
-                    <h3 class="card-title">{{ $totalKK }}</h3>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Jumlah KK</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalKK }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-home fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card p-3 bg-info text-white">
-                <h4>Laki-laki</h4>
-                <p>{{ $lakiLaki }}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 bg-warning text-white">
-                <h4>Perempuan</h4>
-                <p>{{ $perempuan }}</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-header">Surat Pengantar</div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
-                    <h3 class="card-title">{{ $totalSurat }}</h3>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Surat Pengantar</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalSurat }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card p-3 bg-success text-white">
-                <h4>Menikah</h4>
-                <p>{{ $menikah }}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 bg-danger text-white">
-                <h4>Belum Menikah</h4>
-                <p>{{ $belumMenikah }}</p>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Laki-laki / Perempuan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $lakiLaki }} / {{ $perempuan }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-venus-mars fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-<br>
 
-    <a href="{{ route('warga.index') }}" class="btn btn-outline-primary">Kelola Data Warga</a>
-    <a href="{{ route('keluarga.index') }}" class="btn btn-outline-primary">Kelola Data keluarga</a>
-    <a href="{{ route('surat.index') }}" class="btn btn-outline-success">Kelola Surat Pengantar</a>
+    <!-- Statistik Status Pernikahan -->
+    <div class="row">
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Menikah</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $menikah }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ring fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Belum Menikah</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $belumMenikah }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Aksi Cepat -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Menu Aksi Cepat</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{{ route('warga.index') }}" class="btn btn-primary m-1">
+                            <i class="fas fa-users me-1"></i> Kelola Data Warga
+                        </a>
+                        <a href="{{ route('keluarga.index') }}" class="btn btn-success m-1">
+                            <i class="fas fa-home me-1"></i> Kelola Data Keluarga
+                        </a>
+                        <a href="{{ route('surat.index') }}" class="btn btn-warning m-1">
+                            <i class="fas fa-envelope me-1"></i> Kelola Surat Pengantar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafik Kelompok Usia -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Kelompok Usia</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="usiaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafik Pendidikan & Pekerjaan -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Pendidikan</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="pendidikanChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Pekerjaan</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="pekerjaanChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<div class="card mt-5">
-    <div class="card-body">
-        <h4 class="mb-4">Grafik Kelompok Usia</h4>
-        <canvas id="usiaChart"></canvas>
-    </div>
-</div>
-
-<div class="row mt-5">
-    <div class="col-md-6">
-        <h5 class="mb-3">Grafik Pendidikan</h5>
-        <canvas id="pendidikanChart"></canvas>
-    </div>
-    <div class="col-md-6">
-        <h5 class="mb-3">Grafik Pekerjaan</h5>
-        <canvas id="pekerjaanChart"></canvas>
-    </div>
-</div>
-
 <script>
     const ctx = document.getElementById('usiaChart').getContext('2d');
     const usiaChart = new Chart(ctx, {
@@ -98,6 +189,8 @@
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: { beginAtZero: true }
             }
@@ -105,7 +198,7 @@
     });
 
     const pendidikanData = {
-        labels: {!! json_encode($pendidikan->pluck('pendidikan')) !!},
+        labels: {!! json_encode($pendidikan->pluck('nama_pendidikan')) !!},
         datasets: [{
             label: 'Pendidikan',
             data: {!! json_encode($pendidikan->pluck('total')) !!},
@@ -116,7 +209,7 @@
     };
 
     const pekerjaanData = {
-        labels: {!! json_encode($pekerjaan->pluck('pekerjaan')) !!},
+        labels: {!! json_encode($pekerjaan->pluck('nama_pekerjaan')) !!},
         datasets: [{
             label: 'Pekerjaan',
             data: {!! json_encode($pekerjaan->pluck('total')) !!},
@@ -127,16 +220,22 @@
     };
 
     new Chart(document.getElementById('pendidikanChart'), {
-        type: 'pie',
-        data: pendidikanData
+        type: 'doughnut',
+        data: pendidikanData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
     });
 
     new Chart(document.getElementById('pekerjaanChart'), {
-        type: 'pie',
-        data: pekerjaanData
+        type: 'doughnut',
+        data: pekerjaanData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
     });
-
-
 </script>
-
+@endpush
 @endsection

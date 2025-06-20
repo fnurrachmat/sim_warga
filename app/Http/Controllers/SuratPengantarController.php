@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SuratPengantar;
 use App\Models\Warga;
-use PDF;
+use Barryvdh\DomPDF\Facade\PDF;
 
 class SuratPengantarController extends Controller
 {

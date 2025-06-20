@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WargaController;
 use App\Http\Controllers\SuratPengantarController;
-use App\Http\Controllers\ArsipSuratController;
+use App\Http\Controllers\KeuanganController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -48,8 +48,8 @@ Route::get('/surat/create', [SuratPengantarController::class, 'create'])->name('
 Route::post('/surat', [SuratPengantarController::class, 'store'])->name('surat.store');
 Route::get('/surat/{id}/cetak', [SuratPengantarController::class, 'cetakPdf'])->name('surat.cetak');
 
-// Arsip Surat Routes
-Route::resource('arsip', ArsipSuratController::class)->middleware(['auth']);
-Route::get('arsip/cetak-ulang/{id}', [ArsipSuratController::class, 'cetakUlang'])->name('arsip.cetak-ulang');
+// Keuangan Kas RT
+Route::resource('keuangan', KeuanganController::class);
+Route::get('/keuangan/export/pdf', [KeuanganController::class, 'exportPdf'])->name('keuangan.export.pdf');
 
 require __DIR__.'/auth.php';

@@ -27,13 +27,17 @@ class DashboardController extends Controller
         $usiaLansia = Warga::where('tanggal_lahir', '<=', $today->copy()->subYears(60))->count();
 
           // Pendidikan
-        $pendidikan = Warga::select('pendidikan_id', DB::raw('count(*) as total'))
-        ->groupBy('pendidikan_id')
+
+        $pendidikan = Warga::select('pendidikan_id', 'md.nama as nama_pendidikan', DB::raw('count(*) as total'))
+        ->join('master_data as md', 'warga.pendidikan_id', '=', 'md.id')
+        ->groupBy('pendidikan_id', 'md.nama')
         ->get();
 
         // Pekerjaan
-        $pekerjaan = Warga::select('pekerjaan_id', DB::raw('count(*) as total'))
-        ->groupBy('pekerjaan_id')
+
+        $pekerjaan = Warga::select('pekerjaan_id', 'md.nama as nama_pekerjaan', DB::raw('count(*) as total'))
+        ->join('master_data as md', 'warga.pekerjaan_id', '=', 'md.id')
+        ->groupBy('pekerjaan_id', 'md.nama')
         ->get();
 
         return view('dashboard', compact('totalWarga', 'totalKK', 'totalSurat','lakiLaki','perempuan','menikah','belumMenikah','usiaAnak', 'usiaDewasaMuda', 'usiaDewasa', 'usiaLansia', 'pendidikan', 'pekerjaan'));
