@@ -128,6 +128,133 @@
                         <a href="{{ route('surat.index') }}" class="btn btn-warning m-1">
                             <i class="fas fa-envelope me-1"></i> Kelola Surat Pengantar
                         </a>
+                        <a href="{{ route('keuangan.index') }}" class="btn btn-info m-1">
+                            <i class="fas fa-money-bill me-1"></i> Kelola Keuangan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ringkasan Keuangan -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    @php
+                        $namaBulan = [
+                            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                        ];
+                        $bulanAwalText = $namaBulan[$startDate->format('n')] ?? $startDate->format('F');
+                        $bulanAkhirText = $namaBulan[$endDate->format('n')] ?? $endDate->format('F');
+                    @endphp
+                    <h6 class="m-0 font-weight-bold text-primary">Ringkasan Keuangan ({{ $bulanAwalText }} {{ $startDate->format('Y') }} - {{ $bulanAkhirText }} {{ $endDate->format('Y') }})</h6>
+                    <a href="{{ route('keuangan.index') }}" class="btn btn-sm btn-primary">Lihat Detail</a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <div class="card border-left-info h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Saldo Awal</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-wallet fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card border-left-success h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Pemasukan</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-arrow-down fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card border-left-danger h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Pengeluaran</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-arrow-up fa-2x text-danger"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card border-left-primary h-100">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Saldo Akhir</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($saldoKeuangan, 0, ',', '.') }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-money-bill-wave fa-2x text-primary"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaksi Terbaru -->
+                    <div class="mt-4">
+                        <h6 class="font-weight-bold">Transaksi Terbaru</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Keterangan</th>
+                                        <th>Kategori</th>
+                                        <th>Jenis</th>
+                                        <th>Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($transaksiTerbaru as $t)
+                                        <tr>
+                                            <td>{{ $t->tanggal->format('d/m/Y') }}</td>
+                                            <td>{{ $t->keterangan }}</td>
+                                            <td>{{ $t->kategori }}</td>
+                                            <td>
+                                                @if($t->jenis == 'pemasukan')
+                                                    <span class="badge bg-success">Pemasukan</span>
+                                                @else
+                                                    <span class="badge bg-danger">Pengeluaran</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-end">Rp {{ number_format($t->jumlah, 0, ',', '.') }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center">Belum ada transaksi</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

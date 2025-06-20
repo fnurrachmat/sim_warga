@@ -13,15 +13,94 @@
         </div>
     @endif
 
+     <!-- Filter -->
+     <div class="card mb-4">
+        <div class="card-header">
+            <h5>Filter Data</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('keuangan.index') }}" method="GET" class="row g-3">
+                <div class="col-md-2">
+                    <label for="jenis" class="form-label">Jenis Transaksi</label>
+                    <select name="jenis" id="jenis" class="form-control">
+                        <option value="">Semua</option>
+                        <option value="pemasukan" {{ request('jenis') == 'pemasukan' ? 'selected' : '' }}>Pemasukan</option>
+                        <option value="pengeluaran" {{ request('jenis') == 'pengeluaran' ? 'selected' : '' }}>Pengeluaran</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="kategori" class="form-label">Kategori</label>
+                    <select name="kategori" id="kategori" class="form-control">
+                        <option value="">Semua</option>
+                        @foreach($kategoriList as $kategori)
+                            <option value="{{ $kategori }}" {{ request('kategori') == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="bulan_awal" class="form-label">Bulan Awal</label>
+                    <select name="bulan_awal" id="bulan_awal" class="form-control">
+                        @foreach($daftarBulan as $key => $bulan)
+                            <option value="{{ $key }}" {{ $bulan_awal == $key ? 'selected' : '' }}>{{ $bulan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="tahun_awal" class="form-label">Tahun Awal</label>
+                    <select name="tahun_awal" id="tahun_awal" class="form-control">
+                        @foreach($daftarTahun as $tahun)
+                            <option value="{{ $tahun }}" {{ $tahun_awal == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="bulan_akhir" class="form-label">Bulan Akhir</label>
+                    <select name="bulan_akhir" id="bulan_akhir" class="form-control">
+                        @foreach($daftarBulan as $key => $bulan)
+                            <option value="{{ $key }}" {{ $bulan_akhir == $key ? 'selected' : '' }}>{{ $bulan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="tahun_akhir" class="form-label">Tahun Akhir</label>
+                    <select name="tahun_akhir" id="tahun_akhir" class="form-control">
+                        @foreach($daftarTahun as $tahun)
+                            <option value="{{ $tahun }}" {{ $tahun_akhir == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ route('keuangan.index') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('keuangan.export.pdf') }}?bulan_awal={{ $bulan_awal }}&tahun_awal={{ $tahun_awal }}&bulan_akhir={{ $bulan_akhir }}&tahun_akhir={{ $tahun_akhir }}&jenis={{ request('jenis') }}&kategori={{ request('kategori') }}" class="btn btn-danger">Export PDF</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Card Ringkasan -->
-    <div class="row mb-4">
-        <div class="col-md-4">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card border-left-info h-100">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Saldo Awal</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($saldoAwal, 0, ',', '.') }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-wallet fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
             <div class="card border-left-success h-100">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Pemasukan</div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Pemasukan</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
                         </div>
                         <div class="col-auto">
@@ -31,14 +110,12 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
+        <div class="col-md-3 mb-4">
             <div class="card border-left-danger h-100">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Total Pengeluaran</div>
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Pengeluaran</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
                         </div>
                         <div class="col-auto">
@@ -48,63 +125,20 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
+        <div class="col-md-3 mb-4">
             <div class="card border-left-primary h-100">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Saldo Akhir</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Saldo Akhir</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($saldoAkhir, 0, ',', '.') }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-wallet fa-2x text-primary"></i>
+                            <i class="fas fa-money-bill-wave fa-2x text-primary"></i>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Filter -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Filter Data</h5>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('keuangan.index') }}" method="GET" class="row g-3">
-                <div class="col-md-3">
-                    <label for="jenis" class="form-label">Jenis Transaksi</label>
-                    <select name="jenis" id="jenis" class="form-control">
-                        <option value="">Semua</option>
-                        <option value="pemasukan" {{ request('jenis') == 'pemasukan' ? 'selected' : '' }}>Pemasukan</option>
-                        <option value="pengeluaran" {{ request('jenis') == 'pengeluaran' ? 'selected' : '' }}>Pengeluaran</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="kategori" class="form-label">Kategori</label>
-                    <select name="kategori" id="kategori" class="form-control">
-                        <option value="">Semua</option>
-                        @foreach($kategoriList as $kategori)
-                            <option value="{{ $kategori }}" {{ request('kategori') == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
-                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" value="{{ request('tanggal_mulai') }}">
-                </div>
-                <div class="col-md-3">
-                    <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
-                    <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" value="{{ request('tanggal_akhir') }}">
-                </div>
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ route('keuangan.index') }}" class="btn btn-secondary">Reset</a>
-                    <a href="{{ route('keuangan.export.pdf') }}" class="btn btn-danger">Export PDF</a>
-                </div>
-            </form>
         </div>
     </div>
 

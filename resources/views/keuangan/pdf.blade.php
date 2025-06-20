@@ -61,57 +61,140 @@
         .red {
             color: red;
         }
+        .month-separator {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+        .month-total {
+            background-color: #eaeaea;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h2>LAPORAN KEUANGAN KAS RT</h2>
-        <p>Periode: {{ request('tanggal_mulai') ? \Carbon\Carbon::parse(request('tanggal_mulai'))->format('d/m/Y') : 'Awal' }} - {{ request('tanggal_akhir') ? \Carbon\Carbon::parse(request('tanggal_akhir'))->format('d/m/Y') : 'Akhir' }}</p>
+        <p>Periode: {{ $daftarBulan[$bulan_awal] ?? 'Bulan '.$bulan_awal }} {{ $tahun_awal }} - {{ $daftarBulan[$bulan_akhir] ?? 'Bulan '.$bulan_akhir }} {{ $tahun_akhir }}</p>
         <p>Tanggal Cetak: {{ date('d/m/Y H:i:s') }}</p>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Tanggal</th>
-                <th>Keterangan</th>
-                <th>Kategori</th>
-                <th>Pemasukan</th>
-                <th>Pengeluaran</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($keuangan as $index => $k)
+    @php
+        // Kelompokkan data berdasarkan bulan dan tahun
+        $groupedData = [];
+        $saldoAwalBulan = $saldoAwal ?? 0; // Gunakan saldo awal dari controller
+
+        // Menentukan rentang bulan yang perlu ditampilkan
+        $startDate = Carbon\Carbon::createFromDate($tahun_awal, $bulan_awal, 1);
+        $endDate = Carbon\Carbon::createFromDate($tahun_akhir, $bulan_akhir, 1)->endOfMonth();
+        $currentDate = clone $startDate;
+
+        // Inisialisasi array untuk setiap bulan dalam rentang
+        while ($currentDate <= $endDate) {
+            $yearMonth = $currentDate->format('Y-m');
+            $bulanKey = (int)$currentDate->format('m');
+            $groupedData[$yearMonth] = [
+                'data' => [],
+                'totalPemasukan' => 0,
+                'totalPengeluaran' => 0,
+                'bulan' => $currentDate->format('m'),
+                'tahun' => $currentDate->format('Y'),
+                'namaBulan' => $daftarBulan[$bulanKey] ?? 'Bulan '.$bulanKey
+            ];
+            $currentDate->addMonth();
+        }
+
+        // Kelompokkan data transaksi ke bulan masing-masing
+        foreach ($keuangan as $k) {
+            $yearMonth = $k->tanggal->format('Y-m');
+            if (isset($groupedData[$yearMonth])) {
+                $groupedData[$yearMonth]['data'][] = $k;
+                if ($k->jenis == 'pemasukan') {
+                    $groupedData[$yearMonth]['totalPemasukan'] += $k->jumlah;
+                } else {
+                    $groupedData[$yearMonth]['totalPengeluaran'] += $k->jumlah;
+                }
+            }
+        }
+    @endphp
+
+    @foreach ($groupedData as $yearMonth => $monthData)
+        @if (!$loop->first)
+            <div class="page-break"></div>
+        @endif
+
+        <h3>Laporan Bulan {{ $monthData['namaBulan'] }} {{ $monthData['tahun'] }}</h3>
+        <p>Saldo Awal: Rp {{ number_format($saldoAwalBulan, 0, ',', '.') }}</p>
+
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $k->tanggal->format('d/m/Y') }}</td>
-                    <td>{{ $k->keterangan }}</td>
-                    <td>{{ $k->kategori }}</td>
-                    <td class="text-right">
-                        @if($k->jenis == 'pemasukan')
-                            Rp {{ number_format($k->jumlah, 0, ',', '.') }}
-                        @else
-                            -
-                        @endif
-                    </td>
-                    <td class="text-right">
-                        @if($k->jenis == 'pengeluaran')
-                            Rp {{ number_format($k->jumlah, 0, ',', '.') }}
-                        @else
-                            -
-                        @endif
-                    </td>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Kategori</th>
+                    <th>Pemasukan</th>
+                    <th>Pengeluaran</th>
+                    <th>Saldo</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center">Tidak ada data keuangan</td>
+            </thead>
+            <tbody>
+                @php
+                    $runningBalance = $saldoAwalBulan;
+                    $no = 1;
+                @endphp
+
+                @forelse($monthData['data'] as $k)
+                    @php
+                        if ($k->jenis == 'pemasukan') {
+                            $runningBalance += $k->jumlah;
+                        } else {
+                            $runningBalance -= $k->jumlah;
+                        }
+                    @endphp
+                    <tr>
+                        <td>{{ $no++ }}</td>
+                        <td>{{ $k->tanggal->format('d/m/Y') }}</td>
+                        <td>{{ $k->keterangan }}</td>
+                        <td>{{ $k->kategori }}</td>
+                        <td class="text-right">
+                            @if($k->jenis == 'pemasukan')
+                                Rp {{ number_format($k->jumlah, 0, ',', '.') }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="text-right">
+                            @if($k->jenis == 'pengeluaran')
+                                Rp {{ number_format($k->jumlah, 0, ',', '.') }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="text-right">Rp {{ number_format($runningBalance, 0, ',', '.') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center">Tidak ada data keuangan</td>
+                    </tr>
+                @endforelse
+
+                <tr class="month-total">
+                    <td colspan="4" class="text-right"><strong>Total Bulan {{ $monthData['namaBulan'] }} {{ $monthData['tahun'] }}</strong></td>
+                    <td class="text-right"><strong>Rp {{ number_format($monthData['totalPemasukan'], 0, ',', '.') }}</strong></td>
+                    <td class="text-right"><strong>Rp {{ number_format($monthData['totalPengeluaran'], 0, ',', '.') }}</strong></td>
+                    <td class="text-right"><strong>Rp {{ number_format($runningBalance, 0, ',', '.') }}</strong></td>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+
+        @php
+            // Update saldo awal untuk bulan berikutnya
+            $saldoAwalBulan = $runningBalance;
+        @endphp
+    @endforeach
 
     <div class="summary">
+        <h3>Ringkasan Laporan</h3>
         <table>
             <tr>
                 <th>Total Pemasukan</th>
