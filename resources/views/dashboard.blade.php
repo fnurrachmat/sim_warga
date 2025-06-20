@@ -110,33 +110,6 @@
         </div>
     </div>
 
-    <!-- Menu Aksi Cepat -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Menu Aksi Cepat</h6>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex flex-wrap gap-2">
-                        <a href="{{ route('warga.index') }}" class="btn btn-primary m-1">
-                            <i class="fas fa-users me-1"></i> Kelola Data Warga
-                        </a>
-                        <a href="{{ route('keluarga.index') }}" class="btn btn-success m-1">
-                            <i class="fas fa-home me-1"></i> Kelola Data Keluarga
-                        </a>
-                        <a href="{{ route('surat.index') }}" class="btn btn-warning m-1">
-                            <i class="fas fa-envelope me-1"></i> Kelola Surat Pengantar
-                        </a>
-                        <a href="{{ route('keuangan.index') }}" class="btn btn-info m-1">
-                            <i class="fas fa-money-bill me-1"></i> Kelola Keuangan
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Ringkasan Keuangan -->
     <div class="row mb-4">
         <div class="col-12">
